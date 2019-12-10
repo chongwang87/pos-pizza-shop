@@ -7,8 +7,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red'
 
-import Dashboard from './Dashboard';
-import Order from './Order';
+import Home from './Home';
 
 export default function App() {
   const theme = createMuiTheme({

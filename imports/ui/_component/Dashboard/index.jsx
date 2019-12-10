@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
@@ -10,7 +11,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import PlusIcon from '@material-ui/icons/Add'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
+import Admin from '../../Admin'
+
 const useStyles = makeStyles(theme => ({
+  root : {
+    color: theme.palette.primary
+  },
   title: {
     margin : theme.spacing(2, 0)
   },
@@ -21,7 +27,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Dashboard() {
-  const classes = useStyles()
+  const classes = useStyles(),
+    history = useHistory()
 
   return (
     <Grid container spacing={ 2 }>
@@ -31,14 +38,7 @@ export default function Dashboard() {
           variant="h2"
         >
           Welcome to { ' ' }
-          <Box fontWeight={ 600 } className={ classes.inline }>
-            <Typography
-              color="primary"
-              variant="span"
-            >
-              Popular Pizza
-            </Typography>
-          </Box>!
+          <Box color="primary.main" fontWeight={ 600 } className={ classes.inline }>Popular Pizza</Box>!
         </Typography>
         <ButtonGroup variant="contained">
           <Button
@@ -52,9 +52,13 @@ export default function Dashboard() {
           </Button>
           <Button
             variant="contained"
+            color="secondary"
             className={ classes.button }
             startIcon={ <SupervisorAccountIcon /> }
             size="large"
+            onClick={ () => { history.push("/") }}
+            component={Link}
+            to="/admin"
           >
             Admin
           </Button>

@@ -12,7 +12,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import Typography from '@material-ui/core/Typography'
 
-import Orders from '../../api/orders'
+import Orders from '../../../api/orders'
 
 const columns = [
 	{
