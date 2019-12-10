@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
@@ -8,6 +9,7 @@ import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red'
 
 import Home from './Home';
+import Admin from './Admin';
 
 export default function App() {
   const theme = createMuiTheme({
@@ -17,14 +19,20 @@ export default function App() {
     }
   })
   return (
-    <>
+    <Router>
       <CssBaseline />
       <ThemeProvider theme={ theme }>
         <Container>
-          <Dashboard />
-          <Order />
+          <Switch>
+            <Route exact path='/'>
+              <Home/>
+            </Route>
+            <Route path='/admin'>
+              <Admin />
+            </Route>
+          </Switch>
         </Container>
       </ThemeProvider>
-    </>
+    </Router>
   )
 }
