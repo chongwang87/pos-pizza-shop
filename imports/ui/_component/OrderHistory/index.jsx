@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function Order() {
+function OrderHistory() {
 	const classes = useStyles()
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(50)
@@ -170,4 +170,4 @@ export default withTracker(() => {
 	return {
 		orders: Orders.find().fetch(),
 	}
-})(Order)
+})(OrderHistory)
