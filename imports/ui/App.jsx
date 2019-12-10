@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Hello from './Hello.jsx';
-import Order from './Order.jsx';
-
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
+
+import Hello from './Hello.jsx';
+import Order from './Order';
 
 const App = () => (
   <>
