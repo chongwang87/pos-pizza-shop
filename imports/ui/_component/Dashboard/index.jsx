@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useRouteMatch } from 'react-router-dom'
 
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
@@ -10,8 +10,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import PlusIcon from '@material-ui/icons/Add'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-
-import Admin from '../../Admin'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles(theme => ({
   root : {
@@ -41,27 +40,40 @@ export default function Dashboard() {
           <Box color="primary.main" fontWeight={ 600 } className={ classes.inline }>Popular Pizza</Box>!
         </Typography>
         <ButtonGroup variant="contained">
-          <Button
-            variant="contained"
-            color="primary"
-            className={ classes.button }
-            startIcon={ <PlusIcon /> }
-            size="large"
-          >
-            New Order
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={ classes.button }
-            startIcon={ <SupervisorAccountIcon /> }
-            size="large"
-            onClick={ () => { history.push("/") }}
-            component={Link}
-            to="/admin"
-          >
-            Admin
-          </Button>
+          { useRouteMatch("/admin") ?
+            <Button
+              variant="contained"
+              className={ classes.button }
+              startIcon={ <ArrowBackIcon /> }
+              size="small"
+              component={ Link }
+              to="/"
+            >
+              Back
+            </Button>
+            :
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                className={ classes.button }
+                startIcon={ <PlusIcon /> }
+                size="large"
+              >
+                New Order
+              </Button>
+                  <Button
+                    variant="contained"
+                    className={ classes.button }
+                    startIcon={ <SupervisorAccountIcon /> }
+                    size="large"
+                    component={ Link }
+                    to="/admin"
+                  >
+                    Admin
+              </Button>
+            </>
+          }
         </ButtonGroup>
       </Grid>
     </Grid>
