@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Grid from '@material-ui/core/Grid'
@@ -12,6 +13,9 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 const useStyles = makeStyles(theme => ({
   title: {
     margin : theme.spacing(2, 0)
+  },
+  inline : {
+    display : 'inline-block'
   },
   button: {},
 }))
@@ -26,7 +30,15 @@ export default function Dashboard() {
           className={ classes.title }
           variant="h2"
         >
-          Welcome to Popular Pizza!
+          Welcome to { ' ' }
+          <Box fontWeight={ 600 } className={ classes.inline }>
+            <Typography
+              color="primary"
+              variant="span"
+            >
+              Popular Pizza
+            </Typography>
+          </Box>!
         </Typography>
         <ButtonGroup variant="contained">
           <Button

@@ -102,7 +102,7 @@ function Order() {
 				className={ classes.title }
 				variant="h4"
 			>
-				Order
+				Orders
 			</Typography>
 			<Paper className={ classes.root }>
 				<div className={ classes.tableWrapper }>
