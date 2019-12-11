@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
+import { Meteor } from 'meteor/meteor'
 import { withTracker } from 'meteor/react-meteor-data'
 
 import AppBar from '@material-ui/core/AppBar'
-import Box from '@material-ui/core/Box'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
 
 function Admin(props) {
 	const classes = useStyles(),
-		[value, setValue] = React.useState('flavour'),
-		[state, setState] = React.useState({
+		[value, setValue] = useState('flavour'),
+		[state, setState] = useState({
 			columns: [
 				{ title: 'Name', field: 'name' },
 				{ title: 'Value', field: 'price', type: 'numeric' }
@@ -36,17 +36,23 @@ function Admin(props) {
 
 	const handleChange = (event, newValue) => {
 			setValue(newValue)
-			setState(prevState => {
-				return { ...prevState, data: props.menus(newValue) }
+			setState(state => {
+				return { ...state, data: props.menus(newValue) }
 			})
 		}
+
+	useEffect(() => {
+		setState(state => {
+			return { ...state, data: props.menus(value) }
+		})
+	}, [props.ready])
 
 	return (
 		<>
 			<Dashboard />
 			<Typography className={ classes.introduction } variant="body1">
-				<Box>Customise your menus</Box>
-				<Box>Pizza price = Flavor X (Size + Crust + Addons..)</Box>
+				Customise your menus.
+				Pizza price = Flavor X (Size + Crust + Addons..)
 			</Typography>	
 			<div className={ classes.tabs }>
 				<AppBar position="static">
@@ -61,6 +67,7 @@ function Admin(props) {
 					</Tabs>
 				</AppBar>
 				<MaterialTable
+					isLoading={ !props.ready }
 					title={ value.toLocaleString() }
 					columns={ state.columns }
 					data={ state.data }
@@ -109,7 +116,10 @@ function Admin(props) {
 }
 
 export default withTracker(() => {
+	let subs = Meteor.subscribe('menus')
+
 	return {
+		ready : subs.ready(),
 		menus: (type = 'flavor') => {
 			return Menus.find({ type : type }).fetch()
 		}
