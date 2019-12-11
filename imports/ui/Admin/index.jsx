@@ -14,36 +14,42 @@ import Menus from '../../api/menus'
 import Dashboard from '../_component/Dashboard'
 
 const useStyles = makeStyles(theme => ({
-	introduction : {
+	introduction : { margin : theme.spacing(2, 0) },
+	tabs : {
+		backgroundColor : theme.palette.background.paper,
 		margin : theme.spacing(2, 0)
-	},
-	tabs: {
-		backgroundColor: theme.palette.background.paper,
-		margin : theme.spacing(2, 0)
-	},
+	}
 }))
 
 function Admin(props) {
 	const classes = useStyles(),
 		[value, setValue] = useState('flavour'),
 		[state, setState] = useState({
-			columns: [
-				{ title: 'Name', field: 'name' },
-				{ title: 'Value', field: 'price', type: 'numeric' }
+			columns : [
+				{
+					title : 'Name', field : 'name'
+				},
+				{
+					title : 'Value', field : 'price', type : 'numeric'
+				}
 			],
-			data: props.menus(value),
-		})
+			data : props.menus(value)
+		}),
 
-	const handleChange = (event, newValue) => {
+	 handleChange = (event, newValue) => {
 			setValue(newValue)
 			setState(state => {
-				return { ...state, data: props.menus(newValue) }
+				return {
+					...state, data : props.menus(newValue)
+				}
 			})
 		}
 
 	useEffect(() => {
 		setState(state => {
-			return { ...state, data: props.menus(value) }
+			return {
+				...state, data : props.menus(value)
+			}
 		})
 	}, [props.ready])
 
@@ -52,8 +58,8 @@ function Admin(props) {
 			<Dashboard />
 			<Typography className={ classes.introduction } variant="body1">
 				Customise your menus.
-				Pizza price = Flavor X (Size + Crust + Addons..)
-			</Typography>	
+				Pizza price = Flavor x Crust x (Size + Addons)
+			</Typography>
 			<div className={ classes.tabs }>
 				<AppBar position="static">
 					<Tabs
@@ -73,41 +79,47 @@ function Admin(props) {
 					data={ state.data }
 					options={
 						{
-							pageSize: 20,
-							actionsColumnIndex: 2
+							pageSize : 20,
+							actionsColumnIndex : 2
 						}
 					}
 					editable={ {
-						onRowAdd: newData =>
+						onRowAdd : newData =>
 							new Promise(resolve => {
 								newData.type = value
 								resolve()
 								Menus.insert({
 									...newData,
-									createdAt: new Date()
+									createdAt : new Date()
 								})
 								setState(prevState => {
-									return { ...prevState, data: props.menus(value) }
+									return {
+										...prevState, data : props.menus(value)
+									}
 								})
 							}),
-						onRowUpdate: (newData, oldData) =>
+						onRowUpdate : (newData, oldData) =>
 							new Promise(resolve => {
 								resolve()
 								if (oldData) {
-									Menus.update({ _id: oldData._id }, { $set: newData })
+									Menus.update({ _id : oldData._id }, { $set : newData })
 									setState(prevState => {
-										return { ...prevState, data: props.menus(value) }
+										return {
+											...prevState, data : props.menus(value)
+										}
 									})
 								}
 							}),
-						onRowDelete: oldData =>
+						onRowDelete : oldData =>
 							new Promise(resolve => {
 								resolve()
-								Menus.remove({ _id: oldData._id })
+								Menus.remove({ _id : oldData._id })
 								setState(prevState => {
-									return { ...prevState, data: props.menus(value) }
+									return {
+										...prevState, data : props.menus(value)
+									}
 								})
-							}),
+							})
 					} }
 				/>
 			</div>
@@ -120,7 +132,7 @@ export default withTracker(() => {
 
 	return {
 		ready : subs.ready(),
-		menus: (type = 'flavor') => {
+		menus : (type = 'flavor') => {
 			return Menus.find({ type : type }).fetch()
 		}
 	}
