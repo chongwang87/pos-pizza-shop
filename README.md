@@ -6,3 +6,9 @@
 6. `npm install` to install the necessary npm packages
 7. start the application with `meteor`
 8. open browser and go to http://localhost:3000/
+
+Stacks
+1. NodeJS
+2. MeteorJS
+3. MongoDB
+4. Material UI
