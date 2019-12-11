@@ -1,53 +1,46 @@
-import React, { Component } from 'react'
-import { Link, useHistory, useRouteMatch } from 'react-router-dom'
+import React from 'react'
+import { Link, useRouteMatch } from 'react-router-dom'
 
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Grid from '@material-ui/core/Grid'
-import Modal from '@material-ui/core/Modal'
+import Dialog from '@material-ui/core/Dialog'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import PlusIcon from '@material-ui/icons/Add'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+
+import OrderNew from '../OrderNew'
 
 const useStyles = makeStyles(theme => ({
-	root: {
-		color: theme.palette.primary
-	},
-	title: {
-		margin: theme.spacing(2, 0)
-	},
-	inline: {
-		display: 'inline-block'
-	},
-	button: {},
+	root : { color : theme.palette.primary },
+	title : { margin : theme.spacing(2, 0) },
+	inline : { display : 'inline-block' },
+	button : {},
 	modal : {
-		position: 'absolute',
-		top: theme.spacing(2),
-		left: '50%',
-		transform: 'translate(-50%, 0)',
-		width: '80%',
-		maxWidth: 800,
-		backgroundColor: theme.palette.background.paper,
-		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3),
+		position : 'absolute',
+		top : theme.spacing(2),
+		left : '50%',
+		transform : 'translate(-50%, 0)',
+		width : '80%',
+		maxWidth : 800,
+		backgroundColor : theme.palette.background.paper,
+		boxShadow : theme.shadows[ 5 ]
 	}
 }))
 
 export default function Dashboard() {
 	const classes = useStyles(),
-		[open, setOpen] = React.useState(false)
-
-	const handleOpen = () => {
-		setOpen(true)
-	}
-
-	const handleClose = () => {
-		setOpen(false)
-	}
+		[open, setOpen] = React.useState(false),
+		handleOpen = () => {
+			setOpen(true)
+		},
+		handleClose = () => {
+			setOpen(false)
+		}
 
 	return (
 		<Grid container spacing={ 2 }>
@@ -59,7 +52,7 @@ export default function Dashboard() {
 					Welcome to { ' ' }
 					<Box color="primary.main" fontWeight={ 600 } className={ classes.inline }>Popular Pizza</Box>!
         		</Typography>
-				{ useRouteMatch("/admin") ?
+				{ useRouteMatch('/admin') ?
 					<Button
 						variant="contained"
 						className={ classes.button }
@@ -94,15 +87,11 @@ export default function Dashboard() {
 								Admin
 							</Button>
 						</ButtonGroup>
-						<Modal
-							open={ open }
-							onClose={ handleClose }
-						>
-							<div className={ classes.modal }>
-								<h2>Text in a modal</h2>
-								<p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-							</div>
-						</Modal>
+						<Dialog fullWidth maxWidth="xl" open={ open } onClose={ handleClose }>
+							<OrderNew
+								onClose={handleClose}
+							/>
+						</Dialog>
 					</>
 				}
 			</Grid>
