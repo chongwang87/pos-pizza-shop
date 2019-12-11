@@ -58,7 +58,7 @@ function Admin(props) {
 			<Dashboard />
 			<Typography className={ classes.introduction } variant="body1">
 				Customise your menus.
-				Pizza price = Flavor x Crust x (Size + Addons)
+				Pizza price = Flavor x Crust x (Size ($) + Addons ($))
 			</Typography>
 			<div className={ classes.tabs }>
 				<AppBar position="static">
