@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-
+import React from 'react'
+import moment from 'moment'
+import { Meteor } from 'meteor/meteor'
 import { withTracker } from 'meteor/react-meteor-data'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -15,58 +16,40 @@ import Typography from '@material-ui/core/Typography'
 import Orders from '../../../api/orders'
 
 const columns = [
-	{
-		id : 'flavour',
-		label : 'Flavour',
-		format : v => v.toLocaleString()
-	}, {
-		id : 'size',
-		label : 'Size',
-		align : 'right'
-	}, {
-		id : 'crust',
-		label : 'Crust',
-		format : v => v.toLocaleString()
-	}, {
-		id : 'additional',
-		label : 'Additional',
-		format : v => v.map((e, i) => {
-			return `${ (i > 0) ? ',' : '' } ${ e.toLocaleString() }`
-		})
-	}, {
-		id : 'price',
-		label : 'Price',
-		align : 'right',
-		format : v => v.toFixed(2)
-	}
-]
-
-function createData(id, flavour, size, crust, additional, price) {
-	return {
-		id, flavour, size, crust, additional, price
-	}
-}
-
-const rows = [
-		createData(1, 'Hawaiian', 14, 'Pan', ['mushroom', 'cheese'], 18.90),
-		createData(2, 'Chicken Supreme', 14, 'Pan', ['mushroom'], 18.90),
-		createData(3, 'Super Supreme', 7, 'Pan', ['mushroom'], 18.90),
-		createData(4, 'Pepperoni', 14, 'Pan', ['mushroom'], 18.90),
-		createData(5, 'Veggie Lover\'s', 12, 'Pan', ['mushroom'], 18.90),
-		createData(6, 'Curry Chicken', 7, 'Pan', ['mushroom'], 18.90),
-		createData(7, 'BBQ Chunky Chic', 12, 'Pan', ['mushroom'], 18.90),
-		createData(8, 'Chic Ham \'N\' Shroom', 7, 'Pan', ['mushroom'], 18.90),
-		createData(9, 'Cheese \'N\' Chic', 12, 'Pan', ['mushroom'], 18.90),
-		createData(10, 'Simply Cheese', 12, 'Pan', ['mushroom'], 18.90),
-		createData(11, 'Ocean Delight', 7, 'Pan', ['mushroom'], 18.90),
-		createData(12, 'Very Beefy', 12, 'Pan', ['mushroom'], 18.90),
-		createData(13, 'Wild About Mushrooms', 12, 'Pan', ['mushroom'], 18.90),
-		createData(14, 'BBQ Chicken', 7, 'Pan', ['mushroom'], 18.90),
-		createData(15, 'The Four Cheese', 12, 'Pan', ['mushroom'], 18.90),
-		createData(16, 'Seafood Deluxe', 7, 'Pan', ['mushroom'], 18.90),
-		createData(17, 'Hawaiian Supreme', 12, 'Pan', ['mushroom'], 18.90)
+		{
+			id : 'date',
+			label : 'Date',
+			format : v => moment(v).format('LLL')
+		},
+		{
+			id : 'flavour',
+			label : 'Flavour',
+			format : v => v.toLocaleString()
+		},
+		{
+			id : 'size',
+			label : 'Size',
+			align : 'right'
+		},
+		{
+			id : 'crust',
+			label : 'Crust',
+			format : v => v.toLocaleString()
+		},
+		{
+			id : 'addon',
+			label : 'Addon',
+			format : v => v.map((e, i) => {
+				return `${ (i > 0) ? ',' : '' } ${ e.name.toLocaleString() }`
+			})
+		},
+		{
+			id : 'price',
+			label : 'Price',
+			align : 'right',
+			format : v => `$${ v }`
+		}
 	],
-
 	useStyles = makeStyles(theme => ({
 		root : { width : '100%' },
 		title : {
@@ -77,19 +60,19 @@ const rows = [
 			maxHeight : 600,
 			overflow : 'auto'
 		},
+		tableCellWrap : { whiteSpace : 'wrap' },
 		tableCell : { whiteSpace : 'nowrap' }
 	}))
 
 function OrderHistory() {
 	const classes = useStyles(),
-	 [page, setPage] = React.useState(0),
-	 [rowsPerPage, setRowsPerPage] = React.useState(50),
-
-	 handleChangePage = (event, newPage) => {
+		[page, setPage] = React.useState(0),
+		[rowsPerPage, setRowsPerPage] = React.useState(50),
+		orders = Orders.find({}, { sort : { createdAt : -1 } }).fetch(),
+		handleChangePage = (event, newPage) => {
 			setPage(newPage)
 		},
-
-	 handleChangeRowsPerPage = event => {
+		handleChangeRowsPerPage = event => {
 			setRowsPerPage(+event.target.value)
 			setPage(0)
 		}
@@ -115,6 +98,7 @@ function OrderHistory() {
 										key={ column.id }
 										align={ column.align }
 										style={ { minWidth : column.minWidth } }
+										width={ column.id == 'flavour' || column.id == 'addon' ? '50%' : '' }
 									>
 										{ column.label }
 									</TableCell>
@@ -122,24 +106,43 @@ function OrderHistory() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{ rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
+							{ orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(doc => {
 								return (
 									<TableRow
 										hover
 										role="checkbox"
 										tabIndex={ -1 }
-										key={ row.id }
+										key={ doc._id }
 									>
 										{ columns.map(column => {
-											const value = row[ column.id ]
+											let value
 
+											switch (column.id) {
+												case 'date':
+													value = doc.createdAt
+													break
+												case 'flavour':
+													value = doc.recipe.flavour.name
+													break
+												case 'size':
+													value = doc.recipe.size.name
+													break
+												case 'crust':
+													value = doc.recipe.crust.name
+													break
+												case 'addon':
+													value = doc.recipe.addon
+													break
+												case 'price':
+													value = doc.totalPrice
+													break
+											}
 											return (
 												<TableCell
 													key={ column.id }
 													align={ column.align }
 													component={ column.id == 'flavour' ? 'th' : 'td' }
-													width={ column.id == 'flavour' ? '100%' : '' }
-													className={ classes.tableCell }
+													className={ column.id == 'addon' ? classes.tableCellWrap : classes.tableCell }
 												>
 													{ column.format ? column.format(value) : value }
 												</TableCell>
@@ -154,7 +157,7 @@ function OrderHistory() {
 				<TablePagination
 					rowsPerPageOptions={ [10, 25, 50, 100] }
 					component="div"
-					count={ rows.length }
+					count={ orders.length }
 					rowsPerPage={ rowsPerPage }
 					page={ page }
 					onChangePage={ handleChangePage }
@@ -166,5 +169,10 @@ function OrderHistory() {
 }
 
 export default withTracker(() => {
-	return { orders : Orders.find().fetch() }
+	let subs = Meteor.subscribe('orders')
+
+	return {
+		ready : subs.ready(),
+		orders : Orders.find().fetch()
+	}
 })(OrderHistory)
